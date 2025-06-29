@@ -1,12 +1,10 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
-  // 🔥 Add these CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // 🔥 Handle preflight requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -18,8 +16,10 @@ export default async function handler(req, res) {
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
         currency: 'usd',
-        automatic_payment_methods: { enabled: true }, // ✅ Enable auto payment methods
+        // ✅ ADD THIS
+        automatic_payment_methods: { enabled: true }
       });
+
       res.status(200).json({ clientSecret: paymentIntent.client_secret });
     } catch (err) {
       console.error(err);
