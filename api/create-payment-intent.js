@@ -18,6 +18,7 @@ export default async function handler(req, res) {
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
         currency: 'usd',
+        automatic_payment_methods: { enabled: true }, // ✅ Enable auto payment methods
       });
       res.status(200).json({ clientSecret: paymentIntent.client_secret });
     } catch (err) {
