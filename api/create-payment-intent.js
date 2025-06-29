@@ -18,18 +18,8 @@ export default async function handler(req, res) {
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
         currency: 'usd',
-        // 🔥 Removed automatic_payment_methods for test mode Card Element
+        automatic_payment_methods: { enabled: true } // ✅ Include if you want Payment Element
       });
-
-      // ✅ DOM visibility check (for reference – not usually added in backend but clarifying your request)
-      const paymentContainer = document.getElementById('payment-element');
-      if (!paymentContainer) {
-        console.error("Payment element container not found in DOM.");
-        return;
-      }
-      if (!paymentContainer.offsetParent) {
-        console.warn("Payment element container is hidden when initializing Stripe.");
-      }
 
       res.status(200).json({ clientSecret: paymentIntent.client_secret });
     } catch (err) {
